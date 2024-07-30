@@ -17,6 +17,7 @@ import { TweetModule } from "./tweet/tweet.module";
 import { FollowerModule } from "./follower/follower.module";
 import { CommentModule } from "./comment/comment.module";
 import { UserModule } from "./user/user.module";
+import { FeedbackModule } from "./feedback/feedback.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { SecretsManagerModule } from "./providers/secrets/secretsManager.module";
@@ -34,6 +35,7 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
     FollowerModule,
     CommentModule,
     UserModule,
+    FeedbackModule,
     HealthModule,
     PrismaModule,
     SecretsManagerModule,

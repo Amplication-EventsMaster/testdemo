@@ -12,64 +12,48 @@ import { ACLModule } from "../../auth/acl.module";
 import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
 import { map } from "rxjs";
-import { UserController } from "../user.controller";
-import { UserService } from "../user.service";
+import { FeedbackController } from "../feedback.controller";
+import { FeedbackService } from "../feedback.service";
 
 const nonExistingId = "nonExistingId";
 const existingId = "existingId";
 const CREATE_INPUT = {
   createdAt: new Date(),
-  email: "exampleEmail",
-  firstName: "exampleFirstName",
+  date: new Date(),
+  description: "exampleDescription",
   id: "exampleId",
-  lastName: "exampleLastName",
-  password: "examplePassword",
-  phone: "examplePhone",
   updatedAt: new Date(),
-  username: "exampleUsername",
 };
 const CREATE_RESULT = {
   createdAt: new Date(),
-  email: "exampleEmail",
-  firstName: "exampleFirstName",
+  date: new Date(),
+  description: "exampleDescription",
   id: "exampleId",
-  lastName: "exampleLastName",
-  password: "examplePassword",
-  phone: "examplePhone",
   updatedAt: new Date(),
-  username: "exampleUsername",
 };
 const FIND_MANY_RESULT = [
   {
     createdAt: new Date(),
-    email: "exampleEmail",
-    firstName: "exampleFirstName",
+    date: new Date(),
+    description: "exampleDescription",
     id: "exampleId",
-    lastName: "exampleLastName",
-    password: "examplePassword",
-    phone: "examplePhone",
     updatedAt: new Date(),
-    username: "exampleUsername",
   },
 ];
 const FIND_ONE_RESULT = {
   createdAt: new Date(),
-  email: "exampleEmail",
-  firstName: "exampleFirstName",
+  date: new Date(),
+  description: "exampleDescription",
   id: "exampleId",
-  lastName: "exampleLastName",
-  password: "examplePassword",
-  phone: "examplePhone",
   updatedAt: new Date(),
-  username: "exampleUsername",
 };
 
 const service = {
-  createUser() {
+  createFeedback() {
     return CREATE_RESULT;
   },
-  users: () => FIND_MANY_RESULT,
-  user: ({ where }: { where: { id: string } }) => {
+  feedbacks: () => FIND_MANY_RESULT,
+  feedback: ({ where }: { where: { id: string } }) => {
     switch (where.id) {
       case existingId:
         return FIND_ONE_RESULT;
@@ -111,18 +95,18 @@ const aclValidateRequestInterceptor = {
   },
 };
 
-describe("User", () => {
+describe("Feedback", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         {
-          provide: UserService,
+          provide: FeedbackService,
           useValue: service,
         },
       ],
-      controllers: [UserController],
+      controllers: [FeedbackController],
       imports: [ACLModule],
     })
       .overrideGuard(DefaultAuthGuard)
@@ -139,34 +123,36 @@ describe("User", () => {
     await app.init();
   });
 
-  test("POST /users", async () => {
+  test("POST /feedbacks", async () => {
     await request(app.getHttpServer())
-      .post("/users")
+      .post("/feedbacks")
       .send(CREATE_INPUT)
       .expect(HttpStatus.CREATED)
       .expect({
         ...CREATE_RESULT,
         createdAt: CREATE_RESULT.createdAt.toISOString(),
+        date: CREATE_RESULT.date.toISOString(),
         updatedAt: CREATE_RESULT.updatedAt.toISOString(),
       });
   });
 
-  test("GET /users", async () => {
+  test("GET /feedbacks", async () => {
     await request(app.getHttpServer())
-      .get("/users")
+      .get("/feedbacks")
       .expect(HttpStatus.OK)
       .expect([
         {
           ...FIND_MANY_RESULT[0],
           createdAt: FIND_MANY_RESULT[0].createdAt.toISOString(),
+          date: FIND_MANY_RESULT[0].date.toISOString(),
           updatedAt: FIND_MANY_RESULT[0].updatedAt.toISOString(),
         },
       ]);
   });
 
-  test("GET /users/:id non existing", async () => {
+  test("GET /feedbacks/:id non existing", async () => {
     await request(app.getHttpServer())
-      .get(`${"/users"}/${nonExistingId}`)
+      .get(`${"/feedbacks"}/${nonExistingId}`)
       .expect(HttpStatus.NOT_FOUND)
       .expect({
         statusCode: HttpStatus.NOT_FOUND,
@@ -175,31 +161,33 @@ describe("User", () => {
       });
   });
 
-  test("GET /users/:id existing", async () => {
+  test("GET /feedbacks/:id existing", async () => {
     await request(app.getHttpServer())
-      .get(`${"/users"}/${existingId}`)
+      .get(`${"/feedbacks"}/${existingId}`)
       .expect(HttpStatus.OK)
       .expect({
         ...FIND_ONE_RESULT,
         createdAt: FIND_ONE_RESULT.createdAt.toISOString(),
+        date: FIND_ONE_RESULT.date.toISOString(),
         updatedAt: FIND_ONE_RESULT.updatedAt.toISOString(),
       });
   });
 
-  test("POST /users existing resource", async () => {
+  test("POST /feedbacks existing resource", async () => {
     const agent = request(app.getHttpServer());
     await agent
-      .post("/users")
+      .post("/feedbacks")
       .send(CREATE_INPUT)
       .expect(HttpStatus.CREATED)
       .expect({
         ...CREATE_RESULT,
         createdAt: CREATE_RESULT.createdAt.toISOString(),
+        date: CREATE_RESULT.date.toISOString(),
         updatedAt: CREATE_RESULT.updatedAt.toISOString(),
       })
       .then(function () {
         agent
-          .post("/users")
+          .post("/feedbacks")
           .send(CREATE_INPUT)
           .expect(HttpStatus.CONFLICT)
           .expect({
