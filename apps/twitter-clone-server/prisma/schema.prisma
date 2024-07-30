@@ -57,7 +57,16 @@ model User {
   lastName  String?
   likes     Like[]
   password  String
+  phone     String?
   roles     Json
   updatedAt DateTime @updatedAt
   username  String   @unique
+}
+
+model Feedback {
+  createdAt   DateTime  @default(now())
+  date        DateTime?
+  description String?
+  id          String    @id @default(cuid())
+  updatedAt   DateTime  @updatedAt
 }
