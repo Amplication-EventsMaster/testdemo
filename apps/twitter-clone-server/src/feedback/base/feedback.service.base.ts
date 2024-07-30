@@ -44,4 +44,7 @@ export class FeedbackServiceBase {
   ): Promise<PrismaFeedback> {
     return this.prisma.feedback.delete(args);
   }
+  async ReviewFeedback(args: string): Promise<string> {
+    throw new Error("Not implemented");
+  }
 }
