@@ -138,4 +138,21 @@ export class FeedbackControllerBase {
       throw error;
     }
   }
+
+  @common.Get("/:id/review-feedback")
+  @swagger.ApiOkResponse({
+    type: String,
+  })
+  @swagger.ApiNotFoundResponse({
+    type: errors.NotFoundException,
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async ReviewFeedback(
+    @common.Body()
+    body: string
+  ): Promise<string> {
+    return this.service.ReviewFeedback(body);
+  }
 }

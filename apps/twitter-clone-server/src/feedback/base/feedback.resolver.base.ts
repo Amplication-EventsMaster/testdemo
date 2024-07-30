@@ -96,4 +96,12 @@ export class FeedbackResolverBase {
       throw error;
     }
   }
+
+  @graphql.Query(() => String)
+  async ReviewFeedback(
+    @graphql.Args("args")
+    args: string
+  ): Promise<string> {
+    return this.service.ReviewFeedback(args);
+  }
 }
